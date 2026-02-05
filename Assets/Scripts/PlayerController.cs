@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
         // When Space is pressed, make sure its properly contacting floor
         if (keyboard.spaceKey.wasPressedThisFrame)
         {
-            if (ball.transform.position.x <= 0) 
+            if (ball.transform.position.x <= 0 && ball.transform.position.x > -9) 
             {
                 if (ball.transform.position.y <= (-4+ 0.5f))
                 {
