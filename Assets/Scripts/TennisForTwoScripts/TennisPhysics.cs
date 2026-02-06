@@ -32,7 +32,7 @@ public class TennisPhysics : MonoBehaviour
         transform.position += (Vector3)velocity * Time.deltaTime;
 
         // floor bounces
-        if (transform.position.x < 9 && transform.position.x > -9) // only if ball is on platform
+        if (transform.position.x <= 0 && transform.position.x >= -9) // only if ball is on platform
         {
             if (transform.position.y <= floorY)
             {
@@ -65,7 +65,7 @@ public class TennisPhysics : MonoBehaviour
 
 
         // AI Logic
-        if (transform.position.x > 0 && transform.position.x < 9)
+        if (transform.position.x > 0 && transform.position.x <= 9)
         {
         // Detect if its basically contacting the floor
         if (transform.position.y <= (floorY + 0.1f) && velocity.y < 0)

@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     public float currentAngle = 45f;
     public float AIAngle = 45f;
     public float rotationSpeed = 60f;
-    public float hitPower = 10f;
+    public float hitPower = 8f;
 
     void Update()
     {
@@ -33,9 +33,9 @@ public class PlayerController : MonoBehaviour
         // When Space is pressed, make sure its properly contacting floor
         if (keyboard.spaceKey.wasPressedThisFrame)
         {
-            if (ball.transform.position.x <= 0 && ball.transform.position.x > -9) 
+            if (ball.transform.position.x <= 0 && ball.transform.position.x >= -9) 
             {
-                if (ball.transform.position.y <= (-4+ 0.5f))
+                if (ball.transform.position.y <= (-4+ 0.7f))
                 {
                     ball.HitBall(currentAngle, hitPower);
                 }
