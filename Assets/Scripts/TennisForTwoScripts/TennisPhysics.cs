@@ -15,6 +15,9 @@ public class TennisPhysics : MonoBehaviour
     public int AIID = 1;
     public float resetVx = 4f;
     public float resetVy = 4f;
+    public int activeBounces = 0;
+    public bool onPlayerSide = false;
+    private bool previousSide = false;
 
     void Start()
 
@@ -25,6 +28,19 @@ public class TennisPhysics : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // chunk to figure out what side the ball is on
+        if (transform.position.x < 0)
+        {
+            onPlayerSide = true;
+        }
+        else
+        { onPlayerSide = false;}
+        if (onPlayerSide != previousSide)
+        {
+            activeBounces = 0;
+        }
+        previousSide = onPlayerSide;
+
         // Add gravity to vertical Velo
         velocity.y += gravity * Time.deltaTime;
 
@@ -38,6 +54,7 @@ public class TennisPhysics : MonoBehaviour
             {
                 transform.position = new Vector3(transform.position.x, floorY, 0);
                 velocity.y = -velocity.y * 0.8f;
+                activeBounces++;
             }
         }
 
@@ -57,7 +74,7 @@ public class TennisPhysics : MonoBehaviour
             }
 
         // update score
-        if (isBallActive && transform.position.y < -6)
+        if (isBallActive && (transform.position.y < -6 || activeBounces >= 2))
         {
             StartCoroutine(ScoreHandler());
         }
@@ -71,7 +88,8 @@ public class TennisPhysics : MonoBehaviour
         if (transform.position.y <= (floorY + 0.1f) && velocity.y < 0)
         {
             // AI hits 45 towards the left
-            HitBall(135f, 10f); 
+            HitBall(135f, 10f);
+            activeBounces++;
         }
 
     }
@@ -85,8 +103,17 @@ public class TennisPhysics : MonoBehaviour
     IEnumerator ScoreHandler()
     {
         isBallActive = false;
-        if (transform.position.x > 0)
-            { scoremanager.AddPoint(0); }
+        if (!onPlayerSide)
+            {
+                if (activeBounces == 0)
+                {
+                    scoremanager.AddPoint(1);
+                }
+                else
+                {
+                    scoremanager.AddPoint(0);
+                } 
+            }   
         else
             { scoremanager.AddPoint(1); }
 
@@ -97,6 +124,7 @@ public class TennisPhysics : MonoBehaviour
         resetVx *= -1;
         resetVy *= -1;
         velocity = new Vector2(resetVx, resetVy);
+        activeBounces = 0;
 
     }
 }

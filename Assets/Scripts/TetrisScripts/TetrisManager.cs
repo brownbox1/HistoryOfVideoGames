@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class TetrisManager : MonoBehaviour
 {
+    public ScoreManagerTetris sM;
     public static float dropTime = 0.9f;
     public static float quickDropTime = 0.05f;
     public static int width = 10, height = 20;
@@ -72,6 +73,7 @@ public class TetrisManager : MonoBehaviour
         Destroy(grid[col, row].gameObject);
         grid[col, row] = null;
     }
+    sM.addScore();
    }
 
    void MoveRowsDown(int startRow)

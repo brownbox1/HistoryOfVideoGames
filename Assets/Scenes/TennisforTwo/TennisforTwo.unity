@@ -680,9 +680,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1192013022}
   - component: {fileID: 1192013021}
+  - component: {fileID: 1192013023}
   - component: {fileID: 1192013020}
   - component: {fileID: 1192013019}
-  - component: {fileID: 1192013023}
   - component: {fileID: 1192013024}
   m_Layer: 0
   m_Name: Ball
@@ -807,6 +807,8 @@ MonoBehaviour:
   AIID: 0
   resetVx: 4
   resetVy: 4
+  activeBounces: 0
+  onPlayerSide: 0
 --- !u!96 &1192013024
 TrailRenderer:
   serializedVersion: 4

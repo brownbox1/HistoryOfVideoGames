@@ -4,40 +4,27 @@ using TMPro;
 public class ScoreManagerTetris : MonoBehaviour
 {
     public TextMeshProUGUI scoreText;
-    private int playerScore = 0;
-    private int AIScore = 0;
+    private int linesCleared = 0;
 
-    public void AddPoint(int playerNumber)
+    public void addScore()
     {
-        if (playerNumber == 0)
-        {
-            playerScore += 1;
-        }
-        else
-        {
-            AIScore += 1;
-        }
+        linesCleared++;
         UpdateScoreDisplay();
 
-        if (playerScore >= 5)
+        if (linesCleared >= 40)
         {
             Debug.Log("Winner!");
-        }
-        if (AIScore >= 5)
-        {
-            Debug.Log("AI Won!");
         }
 
     }
     public void UpdateScoreDisplay()
     {
-        scoreText.text = playerScore + " - " + AIScore;
+        scoreText.text = "Score: \n" + (linesCleared * 1000);
     }
 
     public void resetScores()
     {
-        playerScore = 0;
-        AIScore = 0;
+        linesCleared = 0;
         UpdateScoreDisplay();
     }
 }

@@ -405,7 +405,7 @@ GameObject:
   - component: {fileID: 135517094}
   - component: {fileID: 135517093}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Tetris
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1689,7 +1689,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1060161477}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1109001021}
+        m_TargetAssemblyTypeName: MenuController, Assembly-CSharp
+        m_MethodName: loadGame
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Tetris
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1060161477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2254,7 +2266,7 @@ GameObject:
   - component: {fileID: 1383722623}
   - component: {fileID: 1383722622}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TennisForTwo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
