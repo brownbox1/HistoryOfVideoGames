@@ -11,11 +11,29 @@ public class NodeController : MonoBehaviour
     public GameObject nodeRight;
     public GameObject nodeUp;
     public GameObject nodeDown;
+
+    public LayerMask nodeLayer;
+
+    public bool isWarpRightNode = false;
+    public bool isWarpLeftNode = false;
+
+    public bool isPelletNode = false; // checks if node has a pellet when game starts
+    public bool hasPellet = false; // checks if node still has pellet
+
+    public SpriteRenderer pelletSprite;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
+
+        if (transform.childCount > 0)
+        {
+            hasPellet = true;
+            isPelletNode = true;
+            pelletSprite = GetComponentInChildren<SpriteRenderer>();
+        }
         RaycastHit2D[] hitsDown;
-        hitsDown = Physics2D.RaycastAll(transform.position, -Vector2.up);
+        hitsDown = Physics2D.RaycastAll(transform.position, -Vector2.up, 1f, nodeLayer);
 
         for(int i = 0; i < hitsDown.Length; i++)
         {
@@ -27,7 +45,7 @@ public class NodeController : MonoBehaviour
             }
         }
         RaycastHit2D[] hitsUp;
-        hitsUp = Physics2D.RaycastAll(transform.position, Vector2.up);
+        hitsUp = Physics2D.RaycastAll(transform.position, Vector2.up, 1f, nodeLayer);
 
         for(int i = 0; i < hitsUp.Length; i++)
         {
@@ -40,7 +58,7 @@ public class NodeController : MonoBehaviour
         }
 
         RaycastHit2D[] hitsRight;
-        hitsRight = Physics2D.RaycastAll(transform.position, Vector2.right);
+        hitsRight = Physics2D.RaycastAll(transform.position, Vector2.right, 1f, nodeLayer);
 
         for(int i = 0; i < hitsRight.Length; i++)
         {
@@ -53,7 +71,7 @@ public class NodeController : MonoBehaviour
         }
 
         RaycastHit2D[] hitsLeft;
-        hitsLeft = Physics2D.RaycastAll(transform.position, -Vector2.right);
+        hitsLeft = Physics2D.RaycastAll(transform.position, -Vector2.right, 1f, nodeLayer);
 
         for(int i = 0; i < hitsLeft.Length; i++)
         {
@@ -93,6 +111,15 @@ public class NodeController : MonoBehaviour
         else
         {
             return null;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Player" && isPelletNode)
+        {
+            hasPellet = false;
+            pelletSprite.enabled = false;
         }
     }
 }
