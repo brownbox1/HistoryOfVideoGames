@@ -8633,7 +8633,7 @@ GameObject:
   - component: {fileID: 283357576}
   m_Layer: 0
   m_Name: Red
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8711,7 +8711,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MovementControllerPM
   gameManager: {fileID: 1555388167}
   currentNode: {fileID: 0}
-  speed: 0.3
+  speed: 2
   direction: 
   lastMovingDirection: 
   canWarp: 1
@@ -8737,6 +8737,7 @@ MonoBehaviour:
   movementController: {fileID: 0}
   startingNode: {fileID: 0}
   readyToLeaveHome: 0
+  gameManager: {fileID: 0}
 --- !u!4 &283357579
 Transform:
   m_ObjectHideFlags: 0
@@ -44287,6 +44288,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 281f255f39ad9e34c97d5a299060791c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  pacman: {fileID: 0}
   leftWarpNode: {fileID: 361538728}
   rightWarpNode: {fileID: 720587658}
 --- !u!4 &1555388168

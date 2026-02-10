@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class GameManagerPM : MonoBehaviour
 {
+    public GameObject pacman;
     public GameObject leftWarpNode;
     public GameObject rightWarpNode;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
