@@ -11,13 +11,9 @@ public class MovementControllerPM : MonoBehaviour
     public string lastMovingDirection = "";
 
     public bool canWarp = true;
-
-    public bool isGhost = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        lastMovingDirection = "left";
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManagerPM>();
     }
 
     // Update is called once per frame
@@ -34,11 +30,6 @@ public class MovementControllerPM : MonoBehaviour
         // check if at center of node
         if (transform.position.x == currentNode.transform.position.x && transform.position.y == currentNode.transform.position.y)
         {
-            if (isGhost)
-            {
-                GetComponent<EnemyControllerPC>().ReachedCenterOfNode(currentNodeController);
-            }
-
             // if at the center of left warp, warp to the right
             if (currentNodeController.isWarpLeftNode && canWarp)
             {
