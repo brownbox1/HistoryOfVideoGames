@@ -40,9 +40,15 @@ public class EnemyControllerPC : MonoBehaviour
 
     public bool testRespawn = false;
 
+    public bool isFrightened = false;
+
+    public GameObject[] scatterNodes;
+    public int scatterNodeIndex;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        scatterNodeIndex = 0;
         gameManager = GameObject.Find("GameManager").GetComponent<GameManagerPM>();
         movementController = GetComponent<MovementControllerPM>();
         if (ghostType == GhostType.red)
@@ -92,11 +98,33 @@ public class EnemyControllerPC : MonoBehaviour
     {
         if (ghostNodeState == GhostNodeStatesEnum.movingInNodes)
         {
-            // figure out what next game node to go to
-            if (ghostType == GhostType.red)
+            // scatter mode
+            if (gameManager.currentGhostMode == GameManagerPM.GhostMode.scatter)
             {
-                DetermineRedGhostDirection();
+                // if we reached scattter node, add 1 to index and move to next node
+                if ((transform.position.x == scatterNodes[scatterNodeIndex].transform.position.x) && (transform.position.y == scatterNodes[scatterNodeIndex].transform.position.y))
+                scatterNodeIndex++;
+                if (scatterNodeIndex == scatterNodes.Length-1)
+                {
+                    scatterNodeIndex = 0;
+                }
+                string direction = GetClosestDirection(scatterNodes[scatterNodeIndex].transform.position);
+                movementController.SetDirection(direction);
             }
+            // frightened mode
+            else if (isFrightened)
+            {
+                
+            }
+            // chase mode
+            else
+            {
+                if (ghostType == GhostType.red)
+                    {
+                        DetermineRedGhostDirection();
+                    }
+            }
+            
         }
         else if (ghostNodeState == GhostNodeStatesEnum.respawning)
         {
