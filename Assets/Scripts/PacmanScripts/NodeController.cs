@@ -20,12 +20,12 @@ public class NodeController : MonoBehaviour
     public bool isPelletNode = false; // checks if node has a pellet when game starts
     public bool hasPellet = false; // checks if node still has pellet
 
+    public bool isGhostStartingNode = false;
     public SpriteRenderer pelletSprite;
+    public GameManagerPM gameManager;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
-
-
         if (transform.childCount > 0)
         {
             hasPellet = true;
@@ -82,6 +82,12 @@ public class NodeController : MonoBehaviour
                 nodeLeft = hitsLeft[i].collider.gameObject;
             }
         }
+
+        if (isGhostStartingNode)
+        {
+            canMoveDown = true;
+            nodeDown = gameManager.ghostNodeCenter;
+        }
     }
 
     // Update is called once per frame
@@ -113,6 +119,15 @@ public class NodeController : MonoBehaviour
             return null;
         }
     }
+
+    void OnDrawGizmos()
+{
+    Gizmos.color = Color.blue;
+    if (nodeUp != null) Gizmos.DrawLine(transform.position, nodeUp.transform.position);
+    if (nodeDown != null) Gizmos.DrawLine(transform.position, nodeDown.transform.position);
+    if (nodeLeft != null) Gizmos.DrawLine(transform.position, nodeLeft.transform.position);
+    if (nodeRight != null) Gizmos.DrawLine(transform.position, nodeRight.transform.position);
+}
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

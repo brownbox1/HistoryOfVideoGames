@@ -14,6 +14,7 @@ public class EnemyControllerPC : MonoBehaviour
     }
 
     public GhostNodeStatesEnum ghostNodeState;
+    public GhostNodeStatesEnum respawnState;
 
     public enum GhostType
     {
@@ -37,40 +38,54 @@ public class EnemyControllerPC : MonoBehaviour
 
     public GameManagerPM gameManager;
 
+    public bool testRespawn = false;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManagerPM>();
         movementController = GetComponent<MovementControllerPM>();
         if (ghostType == GhostType.red)
         {
             ghostNodeState = GhostNodeStatesEnum.startNode;
+            respawnState = GhostNodeStatesEnum.centerNode;
             startingNode = ghostNodeStart;
+            readyToLeaveHome = true;
         }
         else if (ghostType == GhostType.pink)
         {
             ghostNodeState = GhostNodeStatesEnum.centerNode;
+            respawnState = GhostNodeStatesEnum.centerNode;
             startingNode = ghostNodeCenter;
         }
         else if (ghostType == GhostType.blue)
         {
             ghostNodeState = GhostNodeStatesEnum.leftNode;
+            respawnState = GhostNodeStatesEnum.leftNode;
             startingNode = ghostNodeLeft;
         }
         else if (ghostType == GhostType.orange)
         {
             ghostNodeState = GhostNodeStatesEnum.rightNode;
+            respawnState = GhostNodeStatesEnum.rightNode;
             startingNode = ghostNodeRight;
         }
         movementController.currentNode = startingNode;
         transform.position = startingNode.transform.position;
+
+    
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (testRespawn == true)
+        {
+            readyToLeaveHome = false;
+            ghostNodeState = GhostNodeStatesEnum.respawning;
+            testRespawn = false;
+        }
     }
 
     public void ReachedCenterOfNode(NodeController nodeController)
@@ -85,7 +100,43 @@ public class EnemyControllerPC : MonoBehaviour
         }
         else if (ghostNodeState == GhostNodeStatesEnum.respawning)
         {
+            string direction = "";
+            Vector2 myPos = transform.position;
+            Vector2 startPos = ghostNodeStart.transform.position;
+            Vector2 centerPos = ghostNodeCenter.transform.position;
+            // we reached our start node, move to the center node
+            if (Vector2.Distance(myPos, startPos) < 0.1f)
+            {
+                direction = "down";
+            }
+            // we reached center node, either finish respawn or move left/right
+            else if (Vector2.Distance(myPos, centerPos) < 0.01f)
+            {
+                if (respawnState == GhostNodeStatesEnum.centerNode)
+                {
+                    ghostNodeState = respawnState;
+                }
+                else if (respawnState == GhostNodeStatesEnum.leftNode)
+                {
+                    direction = "left";
+                }
+                else if (respawnState == GhostNodeStatesEnum.rightNode)
+                {
+                    direction = "right";
+                }
+            }
+            else if ( // if our respawn state is left/right node and we got to the node, leave home
+                (transform.position.x == ghostNodeLeft.transform.position.x && transform.position.y == ghostNodeLeft.transform.position.y)
+                || (transform.position.x == ghostNodeRight.transform.position.x && transform.position.y == ghostNodeRight.transform.position.y))
+            {
+                ghostNodeState = respawnState;
+            }
+            else // we are in gameboard still, locate the start
+            {
+                direction = GetClosestDirection(ghostNodeStart.transform.position);
+            }
             // find quickest direction to home
+            movementController.SetDirection(direction);
         }
         else
         {

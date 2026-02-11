@@ -58,6 +58,11 @@ public class MovementControllerPM : MonoBehaviour
             }
             else
             {
+                if (currentNodeController.isGhostStartingNode && direction == "down" &&
+                 (!isGhost || GetComponent<EnemyControllerPC>().ghostNodeState != EnemyControllerPC.GhostNodeStatesEnum.respawning))
+                {
+                    direction = lastMovingDirection;
+                }
                 GameObject newNode = currentNodeController.GetNodeFromDirection(direction);
 
                 if (newNode != null && newNode.CompareTag("Node"))
