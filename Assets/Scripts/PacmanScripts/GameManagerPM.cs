@@ -9,6 +9,11 @@ public class GameManagerPM : MonoBehaviour
     public GameObject ghostNodeRight;
     public GameObject ghostNodeCenter;
     public GameObject ghostNodeStart;
+    
+    public GameObject redGhost;
+    public GameObject pinkGhost;
+    public GameObject blueGhost;
+    public GameObject orangeGhost;
 
     public enum GhostMode
     {

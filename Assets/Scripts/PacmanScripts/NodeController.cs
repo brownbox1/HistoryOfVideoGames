@@ -23,6 +23,8 @@ public class NodeController : MonoBehaviour
     public bool isGhostStartingNode = false;
     public SpriteRenderer pelletSprite;
     public GameManagerPM gameManager;
+
+    public bool isSideNode = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {

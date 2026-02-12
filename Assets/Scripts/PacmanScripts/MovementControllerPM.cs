@@ -16,7 +16,6 @@ public class MovementControllerPM : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        lastMovingDirection = "left";
         gameManager = GameObject.Find("GameManager").GetComponent<GameManagerPM>();
     }
 
@@ -89,6 +88,10 @@ public class MovementControllerPM : MonoBehaviour
         }
     }
 
+    public void SetSpeed(float newSpeed)
+    {
+        speed = newSpeed;
+    }
     public void SetDirection(string newDirection)
     {
         direction = newDirection;
