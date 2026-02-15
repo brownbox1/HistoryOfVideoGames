@@ -8460,7 +8460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovementControllerPM
   gameManager: {fileID: 0}
-  currentNode: {fileID: 0}
+  currentNode: {fileID: 679663477}
   speed: 5
   direction: 
   lastMovingDirection: 
@@ -8494,6 +8494,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyControllerPC
   ghostNodeState: 5
+  startGhostNodeState: 0
   respawnState: 0
   ghostType: 0
   ghostNodeLeft: {fileID: 2138452485}
@@ -8503,7 +8504,7 @@ MonoBehaviour:
   movementController: {fileID: 0}
   startingNode: {fileID: 679663477}
   readyToLeaveHome: 0
-  gameManager: {fileID: 0}
+  gameManager: {fileID: 1555388167}
   testRespawn: 0
   isFrightened: 0
   scatterNodes:
@@ -8512,6 +8513,7 @@ MonoBehaviour:
   - {fileID: 1569628260}
   - {fileID: 32713125}
   scatterNodeIndex: 0
+  leftHomeBefore: 0
 --- !u!61 &283357581
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -14799,9 +14801,9 @@ Transform:
   - {fileID: 190036935}
   - {fileID: 1283738311}
   - {fileID: 262586159}
-  - {fileID: 594178141}
   - {fileID: 1284937811}
   - {fileID: 1173474526}
+  - {fileID: 594178141}
   - {fileID: 175153128}
   - {fileID: 1477675662}
   - {fileID: 1912474262}
@@ -31457,6 +31459,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyControllerPC
   ghostNodeState: 0
+  startGhostNodeState: 0
   respawnState: 0
   ghostType: 2
   ghostNodeLeft: {fileID: 2138452485}
@@ -31466,7 +31469,7 @@ MonoBehaviour:
   movementController: {fileID: 0}
   startingNode: {fileID: 679663477}
   readyToLeaveHome: 0
-  gameManager: {fileID: 0}
+  gameManager: {fileID: 1555388167}
   testRespawn: 0
   isFrightened: 0
   scatterNodes:
@@ -31475,6 +31478,7 @@ MonoBehaviour:
   - {fileID: 1856608457}
   - {fileID: 1656082337}
   scatterNodeIndex: 0
+  leftHomeBefore: 0
 --- !u!114 &1161770372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31488,7 +31492,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovementControllerPM
   gameManager: {fileID: 0}
-  currentNode: {fileID: 0}
+  currentNode: {fileID: 635446727}
   speed: 5
   direction: 
   lastMovingDirection: 
@@ -32949,6 +32953,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyControllerPC
   ghostNodeState: 0
+  startGhostNodeState: 0
   respawnState: 0
   ghostType: 3
   ghostNodeLeft: {fileID: 2138452485}
@@ -32958,7 +32963,7 @@ MonoBehaviour:
   movementController: {fileID: 0}
   startingNode: {fileID: 679663477}
   readyToLeaveHome: 0
-  gameManager: {fileID: 0}
+  gameManager: {fileID: 1555388167}
   testRespawn: 0
   isFrightened: 0
   scatterNodes:
@@ -32973,6 +32978,7 @@ MonoBehaviour:
   - {fileID: 2075552246}
   - {fileID: 213231871}
   scatterNodeIndex: 0
+  leftHomeBefore: 0
 --- !u!114 &1199722675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32986,7 +32992,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovementControllerPM
   gameManager: {fileID: 0}
-  currentNode: {fileID: 0}
+  currentNode: {fileID: 1244143703}
   speed: 5
   direction: 
   lastMovingDirection: 
@@ -42519,7 +42525,7 @@ GameObject:
   - component: {fileID: 1555388168}
   - component: {fileID: 1555388167}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: GameManagerPM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42548,9 +42554,20 @@ MonoBehaviour:
   pinkGhost: {fileID: 1161770368}
   blueGhost: {fileID: 1592452808}
   orangeGhost: {fileID: 1199722671}
+  redGhostController: {fileID: 0}
+  pinkGhostController: {fileID: 0}
+  blueGhostController: {fileID: 0}
+  orangeGhostController: {fileID: 0}
   totalPellets: 0
   pelletsLeft: 0
   pelletsCollectedThisLife: 0
+  hadDeathOnThisLevel: 0
+  gameIsRunning: 0
+  nodeControllers: []
+  newGame: 0
+  clearedLevel: 0
+  lives: 0
+  currentLevel: 0
   currentGhostMode: 0
 --- !u!4 &1555388168
 Transform:
@@ -44411,6 +44428,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyControllerPC
   ghostNodeState: 0
+  startGhostNodeState: 0
   respawnState: 0
   ghostType: 1
   ghostNodeLeft: {fileID: 2138452485}
@@ -44420,7 +44438,7 @@ MonoBehaviour:
   movementController: {fileID: 0}
   startingNode: {fileID: 679663477}
   readyToLeaveHome: 0
-  gameManager: {fileID: 0}
+  gameManager: {fileID: 1555388167}
   testRespawn: 0
   isFrightened: 0
   scatterNodes:
@@ -44433,6 +44451,7 @@ MonoBehaviour:
   - {fileID: 1598893546}
   - {fileID: 1455397455}
   scatterNodeIndex: 0
+  leftHomeBefore: 0
 --- !u!114 &1592452812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44446,7 +44465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovementControllerPM
   gameManager: {fileID: 0}
-  currentNode: {fileID: 0}
+  currentNode: {fileID: 2138452485}
   speed: 5
   direction: 
   lastMovingDirection: 
@@ -47254,6 +47273,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ce8826350f84264caa33ed2ad9acf7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  startNode: {fileID: 1724680118}
+  gameManager: {fileID: 0}
+  startPos: {x: 0, y: 0}
+  movementController: {fileID: 0}
 --- !u!4 &1681208514
 Transform:
   m_ObjectHideFlags: 0
@@ -47263,7 +47286,7 @@ Transform:
   m_GameObject: {fileID: 1681208511}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.60516, z: 0}
+  m_LocalPosition: {x: 0, y: -0.65, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -49142,7 +49165,7 @@ GameObject:
   - component: {fileID: 1724680121}
   - component: {fileID: 1724680122}
   m_Layer: 3
-  m_Name: Node(Clone)
+  m_Name: PacNode
   m_TagString: Node
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
