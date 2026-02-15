@@ -30,9 +30,11 @@ public class NodeController : MonoBehaviour
     {
         if (transform.childCount > 0)
         {
+            gameManager.GotPelletFromNodeController();
             hasPellet = true;
             isPelletNode = true;
             pelletSprite = GetComponentInChildren<SpriteRenderer>();
+
         }
         RaycastHit2D[] hitsDown;
         hitsDown = Physics2D.RaycastAll(transform.position, -Vector2.up, 1f, nodeLayer);
@@ -135,8 +137,12 @@ public class NodeController : MonoBehaviour
     {
         if (collision.tag == "Player" && isPelletNode)
         {
+            if (hasPellet)
+            {
             hasPellet = false;
             pelletSprite.enabled = false;
+            gameManager.CollectedPellet(this);
+            }
         }
     }
 }
