@@ -35,6 +35,9 @@ public class GameManagerPM : MonoBehaviour
     public bool newGame;
     public bool clearedLevel;
 
+    public int lives;
+    public int currentLevel;
+
     public enum GhostMode
     {
         chase, scatter
@@ -52,25 +55,67 @@ public class GameManagerPM : MonoBehaviour
         blueGhostController = blueGhost.GetComponent<EnemyControllerPC>();
         orangeGhostController = orangeGhost.GetComponent<EnemyControllerPC>();
 
-        gameIsRunning = true;
-        pinkGhost.GetComponent<EnemyControllerPC>().readyToLeaveHome = true;
-        currentGhostMode = GhostMode.chase;
         ghostNodeStart.GetComponent<NodeController>().isGhostStartingNode = true;
         pacman = GameObject.Find("Player");
+
+        StartCoroutine(Setup());
     }
 
-    public void Setup()
+    public System.Collections.IEnumerator Setup()
     {
-        for (int i = 0; i < nodeControllers.Count; i++)
+
+         // if pacman clears a level, background will appear covering the level and game will pause for 0.1 seconds
+        if (clearedLevel)
         {
-            nodeControllers[i].RespawnPellet();
+            
+            // activate background
+            yield return new WaitForSeconds(0.1f);
+
+        }   
+
+        pelletsCollectedThisLife = 0;
+        currentGhostMode = GhostMode.scatter;
+        gameIsRunning = false;
+
+        float waitTimer = 1f;
+
+        if (clearedLevel || newGame)
+        {
+            waitTimer = 4f;
+            for (int i = 0; i < nodeControllers.Count; i++)
+            {
+                nodeControllers[i].RespawnPellet();
+            }
+            pacman.GetComponent<PlayerControllerPM>().Setup();
+        
         }
-        pacman.GetComponent<PlayerControllerPM>().Setup();
+
+        if (newGame)
+        {
+            // score = 0
+            // scoreText.text = "Score: " + score.ToString();
+
+            lives = 3;
+            currentLevel = 1;
+            
+        }
+
         
         redGhostController.Setup();
         pinkGhostController.Setup();
         blueGhostController.Setup();
         orangeGhostController.Setup();
+
+        newGame = false;
+        clearedLevel = false;
+        yield return new WaitForSeconds(waitTimer);
+        StartGame();
+    }
+
+    void StartGame()
+    {
+        gameIsRunning = true;
+        Debug.Log("Game Started!");
     }
 
     // Update is called once per frame

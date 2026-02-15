@@ -21,6 +21,10 @@ public class PlayerControllerPM : MonoBehaviour
 
     public void Setup()
     {
+        if (movementController == null)
+        {
+            movementController = GetComponent<MovementControllerPM>();
+        }
         movementController.currentNode = startNode;
         movementController.lastMovingDirection = "left";
         transform.position = startPos;

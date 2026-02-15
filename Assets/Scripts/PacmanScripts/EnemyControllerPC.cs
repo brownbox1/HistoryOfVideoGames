@@ -52,7 +52,7 @@ public class EnemyControllerPC : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManagerPM>();
+        gameManager = GameObject.Find("GameManagerPM").GetComponent<GameManagerPM>();
         movementController = GetComponent<MovementControllerPM>();
         if (ghostType == GhostType.red)
         {
@@ -90,7 +90,10 @@ public class EnemyControllerPC : MonoBehaviour
     public void Setup()
     {
         ghostNodeState = startGhostNodeState;
-
+        if (movementController == null)
+        {
+            movementController = GetComponent<MovementControllerPM>();
+        }
         // reset out ghosts back to home pos
         movementController.currentNode = startingNode;
         transform.position = startingNode.transform.position;
@@ -112,6 +115,11 @@ public class EnemyControllerPC : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!gameManager.gameIsRunning)
+        {
+            return;
+        }
+
         if (testRespawn == true)
         {
             readyToLeaveHome = false;
@@ -131,6 +139,20 @@ public class EnemyControllerPC : MonoBehaviour
 
     public void ReachedCenterOfNode(NodeController nodeController)
     {
+        if (movementController == null)
+        {
+            movementController = GetComponent<MovementControllerPM>();
+        }
+
+        // 2. Safety check for the GameManager
+        if (gameManager == null)
+        {
+            gameManager = GameObject.Find("GameManager").GetComponent<GameManagerPM>();
+        }
+
+    // 3. Now that we are 100% sure they aren't null, proceed
+    if (gameManager == null || movementController == null) return;
+    
         if (ghostNodeState == GhostNodeStatesEnum.movingInNodes)
         {
             leftHomeBefore = true;
