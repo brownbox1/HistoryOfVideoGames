@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class EnemyControllerPC : MonoBehaviour
 {
@@ -47,8 +46,6 @@ public class EnemyControllerPC : MonoBehaviour
     public GameObject[] scatterNodes;
     public int scatterNodeIndex;
 
-    public bool leftHomeBefore = false;
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -60,7 +57,6 @@ public class EnemyControllerPC : MonoBehaviour
             respawnState = GhostNodeStatesEnum.centerNode;
             startingNode = ghostNodeStart;
             readyToLeaveHome = true;
-            leftHomeBefore = true;
         }
         else if (ghostType == GhostType.pink)
         {
@@ -155,7 +151,6 @@ public class EnemyControllerPC : MonoBehaviour
     
         if (ghostNodeState == GhostNodeStatesEnum.movingInNodes)
         {
-            leftHomeBefore = true;
             // scatter mode
             if (gameManager.currentGhostMode == GameManagerPM.GhostMode.scatter)
             {
@@ -164,8 +159,7 @@ public class EnemyControllerPC : MonoBehaviour
             // frightened mode
             else if (isFrightened)
             {
-                string direction = GetRandomDirection();
-                movementController.SetDirection(direction);
+                
             }
             // chase mode
             else
@@ -421,44 +415,5 @@ public class EnemyControllerPC : MonoBehaviour
                 }
                 string direction = GetClosestDirection(scatterNodes[scatterNodeIndex].transform.position);
                 movementController.SetDirection(direction); 
-    }
-
-    string GetRandomDirection()
-    {
-        List<string> possibleDirections = new List<string>();
-        NodeController nodeController = movementController.currentNode.GetComponent<NodeController>();
-
-        if (nodeController.canMoveDown && movementController.lastMovingDirection != "up")
-        {
-            possibleDirections.Add("down");
-        }
-        if (nodeController.canMoveUp && movementController.lastMovingDirection != "down")
-        {
-            possibleDirections.Add("up");
-        }
-        if (nodeController.canMoveRight && movementController.lastMovingDirection != "left")
-        {
-            possibleDirections.Add("right");
-        }
-        if (nodeController.canMoveLeft && movementController.lastMovingDirection != "right")
-        {
-            possibleDirections.Add("left");
-        }
-        string direction = "";
-        int randomDirectionIndex = Random.Range(0, possibleDirections.Count - 1);
-        if (nodeController.isWarpRightNode)
-        {
-            direction = "right";
-        }
-        else if (nodeController.isWarpLeftNode)
-        {
-            direction = "left";
-        }
-        else
-        {
-            direction = possibleDirections[randomDirectionIndex];
-        }
-        
-        return direction;
     }
 }
