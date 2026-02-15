@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GameManagerPM : MonoBehaviour
 {
@@ -16,11 +17,23 @@ public class GameManagerPM : MonoBehaviour
     public GameObject blueGhost;
     public GameObject orangeGhost;
 
+    public EnemyControllerPC redGhostController;
+    public EnemyControllerPC pinkGhostController;
+    public EnemyControllerPC blueGhostController;
+    public EnemyControllerPC orangeGhostController;
+
     public int totalPellets;
     public int pelletsLeft;
     public int pelletsCollectedThisLife;
 
     public bool hadDeathOnThisLevel;
+
+    public bool gameIsRunning;
+
+    public List<NodeController> nodeControllers = new List<NodeController>();
+
+    public bool newGame;
+    public bool clearedLevel;
 
     public enum GhostMode
     {
@@ -31,10 +44,33 @@ public class GameManagerPM : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        newGame= true;
+        clearedLevel = false;
+
+        redGhostController = redGhost.GetComponent<EnemyControllerPC>();
+        pinkGhostController = pinkGhost.GetComponent<EnemyControllerPC>();
+        blueGhostController = blueGhost.GetComponent<EnemyControllerPC>();
+        orangeGhostController = orangeGhost.GetComponent<EnemyControllerPC>();
+
+        gameIsRunning = true;
         pinkGhost.GetComponent<EnemyControllerPC>().readyToLeaveHome = true;
         currentGhostMode = GhostMode.chase;
         ghostNodeStart.GetComponent<NodeController>().isGhostStartingNode = true;
         pacman = GameObject.Find("Player");
+    }
+
+    public void Setup()
+    {
+        for (int i = 0; i < nodeControllers.Count; i++)
+        {
+            nodeControllers[i].RespawnPellet();
+        }
+        pacman.GetComponent<PlayerControllerPM>().Setup();
+        
+        redGhostController.Setup();
+        pinkGhostController.Setup();
+        blueGhostController.Setup();
+        orangeGhostController.Setup();
     }
 
     // Update is called once per frame
@@ -43,8 +79,9 @@ public class GameManagerPM : MonoBehaviour
         
     }
 
-    public void GotPelletFromNodeController()
+    public void GotPelletFromNodeController(NodeController nodecontroller)
     {
+        nodeControllers.Add(nodecontroller);
         totalPellets++;
         pelletsLeft++;
     }

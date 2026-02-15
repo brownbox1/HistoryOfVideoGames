@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class NodeController : MonoBehaviour
 {
@@ -28,9 +29,10 @@ public class NodeController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        gameManager = GameObject.Find("GameManagerPM").GetComponent<GameManagerPM>();
         if (transform.childCount > 0)
         {
-            gameManager.GotPelletFromNodeController();
+            gameManager.GotPelletFromNodeController(this);
             hasPellet = true;
             isPelletNode = true;
             pelletSprite = GetComponentInChildren<SpriteRenderer>();
@@ -94,6 +96,7 @@ public class NodeController : MonoBehaviour
         }
     }
 
+
     // Update is called once per frame
     void Update()
     {
@@ -132,6 +135,15 @@ public class NodeController : MonoBehaviour
     if (nodeLeft != null) Gizmos.DrawLine(transform.position, nodeLeft.transform.position);
     if (nodeRight != null) Gizmos.DrawLine(transform.position, nodeRight.transform.position);
 }
+
+    public void RespawnPellet()
+    {
+        if (isPelletNode)
+        {
+            hasPellet = true;
+            pelletSprite.enabled = true;
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
