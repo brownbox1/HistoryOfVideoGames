@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class BlockManager : MonoBehaviour
 {
@@ -108,6 +109,10 @@ public class BlockManager : MonoBehaviour
             {
                gameObject.transform.eulerAngles += new Vector3(0, 0, 90); 
             }
+        }
+        if (keyboard.escapeKey.isPressed)
+        {
+            SceneManager.LoadScene("MainMenu");
         }
         }
         

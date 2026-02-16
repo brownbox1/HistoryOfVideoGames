@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem; // Add this line!
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,6 +17,10 @@ public class PlayerController : MonoBehaviour
     {
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
+        if (keyboard.escapeKey.isPressed)
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
 
         // Adjust Angles
         if (keyboard.upArrowKey.isPressed)

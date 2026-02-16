@@ -31,6 +31,7 @@ public class GameManagerPM : MonoBehaviour
     public string menuSceneName = "MainMenu";
 
     public bool hadDeathOnThisLevel;
+    public float frightenedTimer = 8f;
 
     public enum GhostMode
     {
@@ -130,7 +131,32 @@ public class GameManagerPM : MonoBehaviour
             pinkGhost.GetComponent<EnemyControllerPC>().readyToLeaveHome = true;
         }
     }
-    void UpdateUI()
+
+    public void CollectedPowerPellet()
+    {
+        score += 50;
+        UpdateUI();
+        StartCoroutine(FrightenedModeRoutine());
+    }
+
+    System.Collections.IEnumerator FrightenedModeRoutine()
+    {
+        SetGhostsFrightened(true);
+
+        yield return new WaitForSeconds(frightenedTimer);
+
+        SetGhostsFrightened(false);
+    }
+
+    void SetGhostsFrightened(bool frightened)
+    {
+        redGhost.GetComponent<EnemyControllerPC>().isFrightened = frightened;
+        pinkGhost.GetComponent<EnemyControllerPC>().isFrightened = frightened;
+        blueGhost.GetComponent<EnemyControllerPC>().isFrightened = frightened;
+        orangeGhost.GetComponent<EnemyControllerPC>().isFrightened = frightened;
+    }
+
+    public void UpdateUI()
         {
             if (scoreText != null)
             {
@@ -142,8 +168,9 @@ public class GameManagerPM : MonoBehaviour
             }
         }
 
-        void ReturnToMenu()
-        {
-            SceneManager.LoadScene(menuSceneName);
-        }
+    void ReturnToMenu()
+    {
+        SceneManager.LoadScene(menuSceneName);
+    }
+    
 }

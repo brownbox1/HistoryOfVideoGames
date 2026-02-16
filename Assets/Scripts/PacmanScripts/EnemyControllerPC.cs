@@ -48,9 +48,16 @@ public class EnemyControllerPC : MonoBehaviour
 
     public bool leftHomeBefore = false;
 
+    public Sprite ghostSprite;
+    public Sprite frightenedSprite;
+    private SpriteRenderer spriteRenderer;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
         scatterNodeIndex = 0;
         gameManager = GameObject.Find("GameManager").GetComponent<GameManagerPM>();
         movementController = GetComponent<MovementControllerPM>();
@@ -88,12 +95,32 @@ public class EnemyControllerPC : MonoBehaviour
     public void Setup()
 {
     // Restore the starting state based on ghost type
-    ghostNodeState = (ghostType == GhostType.red) ? GhostNodeStatesEnum.startNode : (ghostType == GhostType.pink) ? GhostNodeStatesEnum.respawning : GhostNodeStatesEnum.leftNode; 
-    
-    if (ghostType == GhostType.orange) ghostNodeState = GhostNodeStatesEnum.rightNode;
-
-    readyToLeaveHome = (ghostType == GhostType.red);
-    leftHomeBefore = (ghostType == GhostType.red);
+    if (ghostType == GhostType.red)
+        {
+            ghostNodeState = GhostNodeStatesEnum.startNode;
+            respawnState = GhostNodeStatesEnum.centerNode;
+            startingNode = ghostNodeStart;
+            readyToLeaveHome = true;
+            leftHomeBefore = true;
+        }
+        else if (ghostType == GhostType.pink)
+        {
+            ghostNodeState = GhostNodeStatesEnum.centerNode;
+            readyToLeaveHome = true;
+            leftHomeBefore = false;
+        }
+        else if (ghostType == GhostType.blue)
+        {
+            ghostNodeState = GhostNodeStatesEnum.leftNode;
+            respawnState = GhostNodeStatesEnum.leftNode;
+            startingNode = ghostNodeLeft;
+        }
+        else if (ghostType == GhostType.orange)
+        {
+            ghostNodeState = GhostNodeStatesEnum.rightNode;
+            respawnState = GhostNodeStatesEnum.rightNode;
+            startingNode = ghostNodeRight;
+        }
     scatterNodeIndex = 0;
     isFrightened = false;
 
@@ -105,16 +132,50 @@ public class EnemyControllerPC : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // change sprite based off state
+        if (isFrightened)
+        {
+            spriteRenderer.sprite = frightenedSprite;
+            spriteRenderer.color = Color.blue;
+            gameManager.currentGhostMode = GameManagerPM.GhostMode.scatter;
+            
+        }
+        else
+        {
+            gameManager.currentGhostMode = GameManagerPM.GhostMode.chase;
+            spriteRenderer.sprite = ghostSprite;
+            if (ghostType == GhostType.red)
+            {
+                spriteRenderer.color = Color.red;
+            }
+            if (ghostType == GhostType.pink)
+            {
+                spriteRenderer.color = new Color(1f, 0.7226415f, 1f, 1f);
+            }
+            if (ghostType == GhostType.blue)
+            {
+                spriteRenderer.color = new Color (0.3226415f, 0.8485059f, 1f, 1f);
+            }
+            if (ghostType == GhostType.orange)
+            {
+                spriteRenderer.color = Color.orange;
+            }
+
+        }
+
         if (testRespawn == true)
         {
-            readyToLeaveHome = false;
+            readyToLeaveHome = true;
             ghostNodeState = GhostNodeStatesEnum.respawning;
             testRespawn = false;
         }
-
         if (movementController.currentNode.GetComponent<NodeController>().isSideNode)
         {
             movementController.SetSpeed(0.5f);
+        }
+        else if (ghostNodeState == GhostNodeStatesEnum.respawning)
+        {
+            movementController.SetSpeed(4f);
         }
         else
         {
@@ -440,8 +501,10 @@ public class EnemyControllerPC : MonoBehaviour
         {
             if (isFrightened)
             {
+                isFrightened = false;
                 testRespawn = true;
                 gameManager.score += 200;
+                gameManager.UpdateUI();
             }
             else
             {

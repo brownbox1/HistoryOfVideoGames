@@ -24,6 +24,8 @@ public class NodeController : MonoBehaviour
     public SpriteRenderer pelletSprite;
     public GameManagerPM gameManager;
 
+    public bool isPowerPellet = false;
+
     public bool isSideNode = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -139,9 +141,17 @@ public class NodeController : MonoBehaviour
         {
             if (hasPellet)
             {
-            hasPellet = false;
-            pelletSprite.enabled = false;
-            gameManager.CollectedPellet(this);
+                hasPellet = false;
+                pelletSprite.enabled = false;
+                
+                if (isPowerPellet)
+                {
+                    gameManager.CollectedPowerPellet();
+                }
+                else
+                {
+                    gameManager.CollectedPellet(this);
+                }
             }
         }
     }
