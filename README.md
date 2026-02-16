@@ -6,8 +6,11 @@ all version with building the minimum viable product and focusing on functionali
 current states.
 
 All games were build with the intention of being variations of the original versions, as released.
+
 My interpretation of Tennis For Two is directly inspired by East Coast's Interactive take on TFT, with slightly updated controls for keyboard usage and improved scoring.
+
 My version of tetris is inspired by the 1984 version for the Electronica, with updated controls and scoring.
+
 My version of Pac-Man is inspired by the original Namco Arcade cabinet version in 1980.
 
 In the future, I plan on creating 2 more interpretation on classic 2D games, as well as improving the overall presentation of the game. This is my first (serious) unity game,
