@@ -1,5 +1,8 @@
 using UnityEngine;
-using System.Collections.Generic;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
+using TMPro;
 
 public class GameManagerPM : MonoBehaviour
 {
@@ -17,26 +20,17 @@ public class GameManagerPM : MonoBehaviour
     public GameObject blueGhost;
     public GameObject orangeGhost;
 
-    public EnemyControllerPC redGhostController;
-    public EnemyControllerPC pinkGhostController;
-    public EnemyControllerPC blueGhostController;
-    public EnemyControllerPC orangeGhostController;
-
     public int totalPellets;
     public int pelletsLeft;
     public int pelletsCollectedThisLife;
 
+    public int score;
+    public int lives = 3;
+    public TextMeshProUGUI scoreText; 
+    public TextMeshProUGUI livesText;
+    public string menuSceneName = "MainMenu";
+
     public bool hadDeathOnThisLevel;
-
-    public bool gameIsRunning;
-
-    public List<NodeController> nodeControllers = new List<NodeController>();
-
-    public bool newGame;
-    public bool clearedLevel;
-
-    public int lives;
-    public int currentLevel;
 
     public enum GhostMode
     {
@@ -47,86 +41,30 @@ public class GameManagerPM : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        newGame= true;
-        clearedLevel = false;
-
-        redGhostController = redGhost.GetComponent<EnemyControllerPC>();
-        pinkGhostController = pinkGhost.GetComponent<EnemyControllerPC>();
-        blueGhostController = blueGhost.GetComponent<EnemyControllerPC>();
-        orangeGhostController = orangeGhost.GetComponent<EnemyControllerPC>();
-
+        pinkGhost.GetComponent<EnemyControllerPC>().readyToLeaveHome = true;
+        currentGhostMode = GhostMode.chase;
         ghostNodeStart.GetComponent<NodeController>().isGhostStartingNode = true;
         pacman = GameObject.Find("Player");
-
-        StartCoroutine(Setup());
+        
     }
 
-    public System.Collections.IEnumerator Setup()
+    void Start()
     {
-
-         // if pacman clears a level, background will appear covering the level and game will pause for 0.1 seconds
-        if (clearedLevel)
-        {
-            
-            // activate background
-            yield return new WaitForSeconds(0.1f);
-
-        }   
-
-        pelletsCollectedThisLife = 0;
-        currentGhostMode = GhostMode.scatter;
-        gameIsRunning = false;
-
-        float waitTimer = 1f;
-
-        if (clearedLevel || newGame)
-        {
-            waitTimer = 4f;
-            for (int i = 0; i < nodeControllers.Count; i++)
-            {
-                nodeControllers[i].RespawnPellet();
-            }
-            pacman.GetComponent<PlayerControllerPM>().Setup();
-        
-        }
-
-        if (newGame)
-        {
-            // score = 0
-            // scoreText.text = "Score: " + score.ToString();
-
-            lives = 3;
-            currentLevel = 1;
-            
-        }
-
-        
-        redGhostController.Setup();
-        pinkGhostController.Setup();
-        blueGhostController.Setup();
-        orangeGhostController.Setup();
-
-        newGame = false;
-        clearedLevel = false;
-        yield return new WaitForSeconds(waitTimer);
-        StartGame();
-    }
-
-    void StartGame()
-    {
-        gameIsRunning = true;
-        Debug.Log("Game Started!");
+        UpdateUI();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        var keyboard = Keyboard.current;
+        if (keyboard.escapeKey.isPressed)
+        {
+            ReturnToMenu();
+        }
     }
 
-    public void GotPelletFromNodeController(NodeController nodecontroller)
+    public void GotPelletFromNodeController()
     {
-        nodeControllers.Add(nodecontroller);
         totalPellets++;
         pelletsLeft++;
     }
@@ -135,7 +73,14 @@ public class GameManagerPM : MonoBehaviour
     {
         pelletsLeft--;
         pelletsCollectedThisLife++;
+        score += 10;
+        UpdateUI();
         
+        if (pelletsLeft <= 3)
+        {
+            ReturnToMenu();
+        }
+
         int requiredBluePellets = 0;
         int requiredOrangePellets = 0;
 
@@ -158,5 +103,47 @@ public class GameManagerPM : MonoBehaviour
         {
             orangeGhost.GetComponent<EnemyControllerPC>().readyToLeaveHome = true;
         }
+        
     }
+
+    public void pacmanDied()
+    {
+        lives--;
+        Debug.Log("Collision between Ghost/Pacman Detected!");
+        UpdateUI();
+
+        if (lives <= 0)
+        {
+            ReturnToMenu();
+        }
+        else
+        {
+            pelletsCollectedThisLife = 0;
+            hadDeathOnThisLevel = true;
+
+            pacman.GetComponent<PlayerControllerPM>().Setup();
+            redGhost.GetComponent<EnemyControllerPC>().Setup();
+            pinkGhost.GetComponent<EnemyControllerPC>().Setup();
+            blueGhost.GetComponent<EnemyControllerPC>().Setup();
+            orangeGhost.GetComponent<EnemyControllerPC>().Setup();
+
+            pinkGhost.GetComponent<EnemyControllerPC>().readyToLeaveHome = true;
+        }
+    }
+    void UpdateUI()
+        {
+            if (scoreText != null)
+            {
+                scoreText.text = "Score: " + score;
+            }
+            if (livesText != null)
+            {
+                livesText.text = "Lives: " + lives;
+            }
+        }
+
+        void ReturnToMenu()
+        {
+            SceneManager.LoadScene(menuSceneName);
+        }
 }

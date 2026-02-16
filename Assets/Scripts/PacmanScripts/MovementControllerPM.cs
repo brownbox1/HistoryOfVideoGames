@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class MovementControllerPM : MonoBehaviour
 {
@@ -17,7 +16,7 @@ public class MovementControllerPM : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        gameManager = GameObject.Find("GameManagerPM").GetComponent<GameManagerPM>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManagerPM>();
     }
 
     // Update is called once per frame

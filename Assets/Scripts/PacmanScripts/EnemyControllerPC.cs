@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class EnemyControllerPC : MonoBehaviour
 {
@@ -14,7 +15,6 @@ public class EnemyControllerPC : MonoBehaviour
     }
 
     public GhostNodeStatesEnum ghostNodeState;
-    public GhostNodeStatesEnum startGhostNodeState;
     public GhostNodeStatesEnum respawnState;
 
     public enum GhostType
@@ -46,76 +46,65 @@ public class EnemyControllerPC : MonoBehaviour
     public GameObject[] scatterNodes;
     public int scatterNodeIndex;
 
+    public bool leftHomeBefore = false;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        gameManager = GameObject.Find("GameManagerPM").GetComponent<GameManagerPM>();
+        scatterNodeIndex = 0;
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManagerPM>();
         movementController = GetComponent<MovementControllerPM>();
         if (ghostType == GhostType.red)
         {
-            startGhostNodeState = GhostNodeStatesEnum.startNode;
+            ghostNodeState = GhostNodeStatesEnum.startNode;
             respawnState = GhostNodeStatesEnum.centerNode;
             startingNode = ghostNodeStart;
             readyToLeaveHome = true;
+            leftHomeBefore = true;
         }
         else if (ghostType == GhostType.pink)
         {
-            startGhostNodeState = GhostNodeStatesEnum.respawning;
+            ghostNodeState = GhostNodeStatesEnum.respawning;
             respawnState = GhostNodeStatesEnum.centerNode;
             startingNode = ghostNodeCenter;
         }
         else if (ghostType == GhostType.blue)
         {
-            startGhostNodeState = GhostNodeStatesEnum.leftNode;
+            ghostNodeState = GhostNodeStatesEnum.leftNode;
             respawnState = GhostNodeStatesEnum.leftNode;
             startingNode = ghostNodeLeft;
         }
         else if (ghostType == GhostType.orange)
         {
-            startGhostNodeState = GhostNodeStatesEnum.rightNode;
+            ghostNodeState = GhostNodeStatesEnum.rightNode;
             respawnState = GhostNodeStatesEnum.rightNode;
             startingNode = ghostNodeRight;
         }
         movementController.currentNode = startingNode;
         transform.position = startingNode.transform.position;
 
-    
-
     }
 
     public void Setup()
-    {
-        ghostNodeState = startGhostNodeState;
-        if (movementController == null)
-        {
-            movementController = GetComponent<MovementControllerPM>();
-        }
-        // reset out ghosts back to home pos
-        movementController.currentNode = startingNode;
-        transform.position = startingNode.transform.position;
+{
+    // Restore the starting state based on ghost type
+    ghostNodeState = (ghostType == GhostType.red) ? GhostNodeStatesEnum.startNode : (ghostType == GhostType.pink) ? GhostNodeStatesEnum.respawning : GhostNodeStatesEnum.leftNode; 
+    
+    if (ghostType == GhostType.orange) ghostNodeState = GhostNodeStatesEnum.rightNode;
 
-        // set scatter node index back to 0
-        scatterNodeIndex = 0;
+    readyToLeaveHome = (ghostType == GhostType.red);
+    leftHomeBefore = (ghostType == GhostType.red);
+    scatterNodeIndex = 0;
+    isFrightened = false;
 
-        // set isfrighttened
-        isFrightened = false;
-
-        // set readytoleavehome to be false if blue or pink
-        if (ghostType == GhostType.red)
-        {
-            readyToLeaveHome = true;
-            leftHomeBefore = true;
-        }
-    }
+    // Move back to base
+    movementController.currentNode = startingNode;
+    transform.position = startingNode.transform.position;
+}
 
     // Update is called once per frame
     void Update()
     {
-        if (!gameManager.gameIsRunning)
-        {
-            return;
-        }
-
         if (testRespawn == true)
         {
             readyToLeaveHome = false;
@@ -125,32 +114,20 @@ public class EnemyControllerPC : MonoBehaviour
 
         if (movementController.currentNode.GetComponent<NodeController>().isSideNode)
         {
-            movementController.SetSpeed(1);
+            movementController.SetSpeed(0.5f);
         }
         else
         {
-            movementController.SetSpeed(3);
+            movementController.SetSpeed(1f);
         }
     }
 
     public void ReachedCenterOfNode(NodeController nodeController)
     {
-        if (movementController == null)
-        {
-            movementController = GetComponent<MovementControllerPM>();
-        }
-
-        // 2. Safety check for the GameManager
-        if (gameManager == null)
-        {
-            gameManager = GameObject.Find("GameManager").GetComponent<GameManagerPM>();
-        }
-
-    // 3. Now that we are 100% sure they aren't null, proceed
-    if (gameManager == null || movementController == null) return;
-    
+        if (gameManager == null || movementController == null) return;
         if (ghostNodeState == GhostNodeStatesEnum.movingInNodes)
         {
+            leftHomeBefore = true;
             // scatter mode
             if (gameManager.currentGhostMode == GameManagerPM.GhostMode.scatter)
             {
@@ -159,7 +136,8 @@ public class EnemyControllerPC : MonoBehaviour
             // frightened mode
             else if (isFrightened)
             {
-                
+                string direction = GetRandomDirection();
+                movementController.SetDirection(direction);
             }
             // chase mode
             else
@@ -415,5 +393,61 @@ public class EnemyControllerPC : MonoBehaviour
                 }
                 string direction = GetClosestDirection(scatterNodes[scatterNodeIndex].transform.position);
                 movementController.SetDirection(direction); 
+    }
+
+    string GetRandomDirection()
+    {
+        List<string> possibleDirections = new List<string>();
+        NodeController nodeController = movementController.currentNode.GetComponent<NodeController>();
+
+        if (nodeController.canMoveDown && movementController.lastMovingDirection != "up")
+        {
+            possibleDirections.Add("down");
+        }
+        if (nodeController.canMoveUp && movementController.lastMovingDirection != "down")
+        {
+            possibleDirections.Add("up");
+        }
+        if (nodeController.canMoveRight && movementController.lastMovingDirection != "left")
+        {
+            possibleDirections.Add("right");
+        }
+        if (nodeController.canMoveLeft && movementController.lastMovingDirection != "right")
+        {
+            possibleDirections.Add("left");
+        }
+        string direction = "";
+        int randomDirectionIndex = Random.Range(0, possibleDirections.Count - 1);
+        if (nodeController.isWarpRightNode)
+        {
+            direction = "right";
+        }
+        else if (nodeController.isWarpLeftNode)
+        {
+            direction = "left";
+        }
+        else
+        {
+            direction = possibleDirections[randomDirectionIndex];
+        }
+        
+        return direction;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            if (isFrightened)
+            {
+                testRespawn = true;
+                gameManager.score += 200;
+            }
+            else
+            {
+                Debug.Log("Step 1 activatted");
+                gameManager.pacmanDied();
+            }
+        }
     }
 }
