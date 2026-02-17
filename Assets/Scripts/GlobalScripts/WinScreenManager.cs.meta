@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 1f363a1ab8f81324bb1f26506bd6dc7e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - winCanvas: {fileID: 5282205773389051156, guid: ae33339619ba928418917f75e7d73830, type: 3}
+  - blurVolume: {fileID: 1414995478171879401, guid: 2946320d4cb0edc41b8351dbfdd6f2c8, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -77,9 +77,9 @@ public class GameManagerPM : MonoBehaviour
         score += 10;
         UpdateUI();
         
-        if (pelletsLeft <= 3)
+        if (pelletsLeft <= 7)
         {
-            ReturnToMenu();
+            FindFirstObjectByType<WinScreenManager>().HandleWin();
         }
 
         int requiredBluePellets = 0;
@@ -165,6 +165,10 @@ public class GameManagerPM : MonoBehaviour
             if (livesText != null)
             {
                 livesText.text = "Lives: " + lives;
+            }
+            if (pelletsLeft <= 3)
+            {
+                FindFirstObjectByType<WinScreenManager>().HandleWin();
             }
         }
 

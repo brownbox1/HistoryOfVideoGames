@@ -21,7 +21,7 @@ public class ScoreManager : MonoBehaviour
 
         if (playerScore >= 5)
         {
-            Debug.Log("Winner!");
+            FindFirstObjectByType<WinScreenManager>().HandleWin();
         }
         if (AIScore >= 5)
         {

@@ -13,7 +13,7 @@ public class ScoreManagerTetris : MonoBehaviour
 
         if (linesCleared >= 40)
         {
-            Debug.Log("Winner!");
+            FindFirstObjectByType<WinScreenManager>().HandleWin();
         }
 
     }
