@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Pacman/Pacman.unity
     guid: f3256fa6499ce2142b22cf7e29645b41
+  - enabled: 1
+    path: Assets/Scenes/Mario/Mario.unity
+    guid: 0a6ec9e395a810548a2d8b43fa729612
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
