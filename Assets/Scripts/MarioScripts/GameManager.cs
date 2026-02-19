@@ -1,44 +1,39 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance {get; private set; }
 
-    public int world { get; private set;}
-    public int stage { get; private set;}
-    public int lives { get; private set;}
-
+    public int world = 1;
+    public int stage = 1;
+    public int lives = 3;
+    public int score = 0;
+    public TextMeshProUGUI scoreText;
+    
     void Awake()
     {
-        if (Instance != null)
-        {
-            DestroyImmediate(gameObject);
-        }
-        else
+        if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-    }
-
-    private void OnDestroy()
-    {
-        if (Instance == this)
+        else 
         {
-            Instance = null;
+            Destroy(gameObject);
         }
+        // Keeps the score/lives when changing scenes
     }
     
     void Start()
     {
-        NewGame();
+        UpdateScoreDisplay();
     }
 
     private void NewGame()
     {
-        lives = 3;
-
+        ResetScoresAndLives();
         LoadLevel(1, 1);
     }
 
@@ -53,6 +48,7 @@ public class GameManager : MonoBehaviour
     public void ResetLevel()
     {
         lives--;
+        UpdateScoreDisplay();
 
         if (lives > 0)
         {
@@ -66,7 +62,25 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
+        Debug.Log("GAME OVER");
         NewGame();
+    }
+
+    public void addScore(int amount)
+    {
+        score += amount;
+        UpdateScoreDisplay();
+    }
+    public void UpdateScoreDisplay()
+    {
+        scoreText.text = "Score: \n" + score.ToString("D6") + "\nLives: " + lives;
+    }
+
+    public void ResetScoresAndLives()
+    {
+        lives = 3;
+        score = 0;
+        UpdateScoreDisplay();
     }
 
 }

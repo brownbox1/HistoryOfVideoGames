@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class EntityMovement : MonoBehaviour
 {
+    public GameManager gameManager;
     public float moveSpeed = 2f;
     public Vector2 direction = Vector2.left;
 
@@ -65,5 +66,6 @@ public class EntityMovement : MonoBehaviour
         GetComponent<Collider2D>().enabled = false;
 
         Destroy(gameObject, 0.5f);
+        GameManager.Instance.addScore(500);
     }
 }

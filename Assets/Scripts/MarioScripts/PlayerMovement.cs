@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
     private new Rigidbody2D rigidbody;
     private SpriteRenderer spriteRenderer;
+    public GameManager gameManager;
     private new Camera camera;
     private Vector2 moveInput;
 
@@ -34,6 +35,10 @@ public class PlayerMovement : MonoBehaviour
     private float gravity;
     private float initialJumpVelocity;
 
+    public bool isBig = false;
+    public GameObject smallMario;
+    public GameObject bigMario;
+
     void Awake()
     {
         rigidbody = GetComponent<Rigidbody2D>();
@@ -46,6 +51,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         // 1. Get the Keyboard
         var keyboard = Keyboard.current;
         if (keyboard == null) return; // Safety check
@@ -163,9 +169,19 @@ public class PlayerMovement : MonoBehaviour
                 // stop upward momentum immediately
                 rigidbody.linearVelocity = new Vector2(rigidbody.linearVelocity.x, 0);
                 MysteryBlock block = hit.collider.GetComponent<MysteryBlock>();
+
                 if (block != null)
                 {
                     block.RequestHit();
+                }
+                else if (hit.collider.CompareTag("Ground")) // if its a normal brick, break it
+                {
+                    if (isBig)
+                    {
+                        Destroy(hit.collider.gameObject);
+                        GameManager.Instance.addScore(100);
+                    }
+                    
                 }
             }
         }
@@ -195,8 +211,57 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                Debug.Log("mario death thing");
+                TakeDamage();
             }
+        }
+        else if (collision.gameObject.CompareTag("Mushroom"))
+        {
+            BecomeBig();
+            GameManager.Instance.addScore(1000);
+            Destroy(collision.gameObject);
+        }
+    }
+
+    void BecomeBig()
+    {
+        if (isBig)
+        {
+            return; // already big, dont do anything
+        }
+
+        isBig = true;
+        smallMario.SetActive(false);
+        bigMario.SetActive(true);
+
+        BoxCollider2D collider = GetComponent<BoxCollider2D>();
+        if (collider != null)
+        {
+            collider.size = new Vector2(collider.size.y, 2f); // increase size by 2
+            collider.offset = new Vector2(collider.offset.y, 1f); // center it through 1
+        }
+
+    }
+
+    public void TakeDamage()
+    {
+        if (isBig)
+        {
+            isBig = false;
+            bigMario.SetActive(false);
+            smallMario.SetActive(true);
+
+            BoxCollider2D collider = GetComponent<BoxCollider2D>();
+            if (collider != null)
+            {
+                collider.size = new Vector2(collider.size.y, 1f); // increase size by 2
+                collider.offset = new Vector2(collider.offset.y, 0.5f); // center it through 1
+            }
+
+            // add invincibility frames later
+        }
+        else
+        {
+            GameManager.Instance.ResetLevel();
         }
     }
 }
