@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour
     public int lives = 3;
     public int score = 0;
     public TextMeshProUGUI scoreText;
+
+    public float timeRemaining = 400f;
+    private bool timerIsRunning = false;
     
     void Awake()
     {
@@ -29,6 +32,45 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         UpdateScoreDisplay();
+        StartTimer();
+    }
+    void Update()
+    {
+        if (timerIsRunning)
+        {
+            if (timeRemaining > 0)
+            {
+                timeRemaining -= Time.deltaTime;
+                UpdateScoreDisplay();
+            }
+            else
+            {
+                // time ran out
+                timeRemaining = 0;
+                timerIsRunning = false;
+                ResetLevel();
+            }
+        }
+    }
+
+    public void StartTimer()
+    {
+        timerIsRunning = true;
+    }
+    public void StopTimer()
+    {
+        timerIsRunning = false;
+    }
+
+    public void TimeBonus()
+    {
+        StopTimer();
+
+        // turn remaining seconds into score
+        int timeBonus = Mathf.FloorToInt(timeRemaining) * 50;
+        addScore(timeBonus);
+        
+        Debug.Log("Score added with time Bonus: " + timeBonus);
     }
 
     private void NewGame()
@@ -41,6 +83,9 @@ public class GameManager : MonoBehaviour
     {
         this.world = world;
         this.stage = stage;
+
+        timeRemaining = 400f;
+        StartTimer();
 
         SceneManager.LoadScene("Mario");
     }
@@ -73,7 +118,8 @@ public class GameManager : MonoBehaviour
     }
     public void UpdateScoreDisplay()
     {
-        scoreText.text = "Score: \n" + score.ToString("D6") + "\nLives: " + lives;
+        scoreText.text = "    MARIO                              LIVES             TIME\n" +
+                         "    " + score.ToString("D6") + "                               " + lives + "                " + Mathf.FloorToInt(timeRemaining);
     }
 
     public void ResetScoresAndLives()

@@ -9,6 +9,7 @@ TagManager:
   - Ground
   - Enemy
   - Mushroom
+  - Underground Camera
   layers:
   - Default
   - TransparentFX

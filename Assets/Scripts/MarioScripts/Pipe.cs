@@ -1,17 +1,31 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 public class Pipe : MonoBehaviour
 {
     public Transform connection;
-    public KeyCode enterKey = KeyCode.S;
-    private bool isPlayerOnTop = false;
+    public Camera undergroundCamera;
+    public Camera mainCamera;
+    public Vector3 undergroundCameraPos;
+    public enum PipeDirection
+    {
+        Down,
+        Right,
+        Left,
+        Up
+    }
+
+    public PipeDirection direction = PipeDirection.Down;
+
+    private bool isPlayerTouching = false;
+    private bool isEntering = false;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            isPlayerOnTop = true;
+            isPlayerTouching = true;
         }
     }
 
@@ -19,16 +33,42 @@ public class Pipe : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            isPlayerOnTop = false;
+            isPlayerTouching = false;
         }
     }
     
     // Update is called once per frame
     void Update()
     {
-        if (isPlayerOnTop && Input.GetKeyDown(enterKey) && connection != null)
+        if (isEntering || !isPlayerTouching || connection == null)
         {
+            return;
+        }
+        var keyboard = Keyboard.current;
+        bool inputPressed = false;
+        if (direction == PipeDirection.Down && keyboard.sKey.isPressed)
+        {
+            inputPressed = true;
+        }
+        else if (direction == PipeDirection.Right && keyboard.dKey.isPressed)
+        {
+            inputPressed = true;
+        }
+
+        if (inputPressed)
+        {
+            isEntering = true;
             StartCoroutine(EnterPipeSequence(GameObject.FindGameObjectWithTag("Player")));
+            if (direction == PipeDirection.Right)
+            {
+                mainCamera.enabled = true;
+                undergroundCamera.enabled = false;
+            }
+            else
+            {
+                undergroundCamera.enabled = true;
+                mainCamera.enabled = false;
+            }
         }
     }
 
@@ -39,7 +79,14 @@ public class Pipe : MonoBehaviour
         rigidbody.linearVelocity = Vector2.zero;
         rigidbody.isKinematic = true;
 
-        Vector3 endPosition = player.transform.position + Vector3.down * 2f;
+        // figure out what direction to slide in
+        Vector3 moveDir = Vector3.down; // default
+        if (direction == PipeDirection.Right)
+        {
+            moveDir = Vector3.right;
+        }
+
+        Vector3 endPosition = player.transform.position + moveDir * 3f;
         float elapsed = 0f;
         float duration = 1f;
 
@@ -54,5 +101,6 @@ public class Pipe : MonoBehaviour
 
         rigidbody.isKinematic = false;
         player.GetComponent<PlayerMovement>().enabled = true;
+
     }
 }
