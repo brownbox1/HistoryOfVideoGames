@@ -82,14 +82,37 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyMovement()
     {
-        float targetSpeed = moveInput.x * moveSpeed;
+        float currentMaxSpeed;
+        float currentAccel;
+
+        if (isSprinting)
+        {
+            currentMaxSpeed = moveSpeed * sprintSpeedMultiplier;
+            currentAccel = acceleration * sprintAccelMultiplier;
+        }
+        else
+        {
+            currentMaxSpeed = moveSpeed;
+            currentAccel = acceleration;
+        }
+
+        float targetSpeed = moveInput.x * currentMaxSpeed;
         float speedDif = targetSpeed - rigidbody.linearVelocity.x;
 
         float accelRate;
+
         if (Mathf.Abs(moveInput.x) > 0.01f)
         {
             bool isSkidding = (moveInput.x > 0 && rigidbody.linearVelocity.x < -0.1f) || (moveInput.x < 0 && rigidbody.linearVelocity.x > 0.1f);
-            accelRate = isSkidding ? skidFriction : acceleration;
+
+            if (isSkidding)
+            {
+                accelRate = skidFriction;
+            }
+            else
+            {
+                accelRate = currentAccel;
+            }
         }
         else
         {
@@ -139,11 +162,11 @@ public class PlayerMovement : MonoBehaviour
             {
                 // stop upward momentum immediately
                 rigidbody.linearVelocity = new Vector2(rigidbody.linearVelocity.x, 0);
-            }
-
-            if (hit.collider.CompareTag("Brick"))
-            {
-                // Destroy(hit.collider.gameObject);
+                MysteryBlock block = hit.collider.GetComponent<MysteryBlock>();
+                if (block != null)
+                {
+                    block.RequestHit();
+                }
             }
         }
     }
@@ -151,5 +174,29 @@ public class PlayerMovement : MonoBehaviour
     void CheckGround()
     {
         isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, whatIsGround);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            // check if mario is falling and above goomba
+            if (rigidbody.linearVelocity.y < 0 && transform.position.y > collision.transform.position.y + 0.2f)
+            {
+                EntityMovement enemy = collision.gameObject.GetComponent<EntityMovement>();
+
+                if (enemy != null)
+                {
+                    enemy.Squash();
+
+                    // bounce mario up
+                    rigidbody.linearVelocity = new Vector2(rigidbody.linearVelocity.x, initialJumpVelocity * 0.6f);
+                }
+            }
+            else
+            {
+                Debug.Log("mario death thing");
+            }
+        }
     }
 }

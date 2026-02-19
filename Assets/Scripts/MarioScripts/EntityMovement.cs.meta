@@ -1,2 +1,12 @@
 fileFormatVersion: 2
 guid: 214707b7b4e8a4a4faee68b15d5a250c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - squashSprite: {fileID: -3409653215691759839, guid: bc1c8c55c1c4db641a84212cf8f73fd2, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
